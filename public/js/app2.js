@@ -1,7 +1,7 @@
 App = Ember.Application.create({LOG_TRANSITIONS: true, LOG_TRANSITIONS_INTERNAL: true});
 
 DS.RESTAdapter.reopen({
-	host: 'http://127.0.0.1:9393'
+//	host: 'http://127.0.0.1:9393'
 });
 
 // Router
