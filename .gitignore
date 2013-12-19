@@ -1,2 +1,4 @@
 *.sw*
+data.db
 passports/*
+.bundle
