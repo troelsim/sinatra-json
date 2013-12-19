@@ -1,141 +1,177 @@
-App = Ember.Application.create();
-// Model
-App.Company = DS.Model.extend({
-	name: DS.attr('string'),
-	email: DS.attr('string'),
-	city: DS.attr('string'),
-	country: DS.attr('string'),
-	phone: DS.attr('string'),
-	owners: DS.hasMany('owner', {async: true})
+App = Ember.Application.create({LOG_TRANSITIONS: true, LOG_TRANSITIONS_INTERNAL: true});
+
+DS.RESTAdapter.reopen({
+//	host: 'http://127.0.0.1:9393'
 });
 
-App.Owner = DS.Model.extend({
-	company: DS.belongsTo('company'),
-	name: DS.attr('string'),
-	passport: DS.attr('string'),
-});
+// Router
 
-
-App.Router.map(function() {
-	this.resource('companies', function(){
-		this.route('new');
+App.Router.map(function(){
+	this.resource('companies',function(){
 		this.resource('company', {path: ':company_id'}, function(){
-			this.resource('owners', {path: '/owners' },function(){
-				this.route('new');
+			this.resource('owners', {path: '/owners'}, function(){
 				this.resource('owner', {path: ':owner_id'});
 			});
 		});
 	});
 });
 
-App.OwnersNewRoute = Ember.Route.extend({
-	setupController: function(controller,params){
-		controller.newRecord(params);
-	}
+// Model
+
+App.Company = DS.Model.extend({
+	name: DS.attr('string'),
+	email: DS.attr('string'),
+	city: DS.attr('string'),
+	country: DS.attr('string'),
+	address: DS.attr('string'),
+	phone: DS.attr('string'),
+	owners: DS.hasMany('owner',{async:true})
 });
 
-App.OwnerRoute = Ember.Route.extend({
-	model: function() {
-		return this.modelFor('order');
-	}
+App.Owner = DS.Model.extend({
+	name: DS.attr('string'),
+	passport: DS.attr('string'),
+	company_id: DS.belongsTo('company'),
+	passport_file: DS.attr('string')
 });
 
-App.OwnersRoute = Ember.Route.extend({
-//	model: function() {
-//		return this.modelFor('company').get('owners');
-//	}
-	model: function() {
-		return this.modelFor('company').get('owners');
-	}
-});
 
+/* ----------
+   | Routes |
+   ---------- */
+
+// Front page
+App.IndexRoute = Ember.Route.extend({});
+
+// List of Companies
 App.CompaniesRoute = Ember.Route.extend({
-	model: function() {
-		return this.store.find('company');
+	model: function(){
+		return this.store.find('company'); // Find all companies
 	}
 });
 
-App.CompanyRoute = Ember.Route.extend({
-	model: function() {
-		return this.store.modelFor('company');
+// Company Details
+App.CompanyIndexRoute = Ember.Route.extend({
+	model: function(){
+		return this.modelFor('company'); // Find company
 	}
 });
 
-App.CompaniesNewRoute = Ember.Route.extend({
-	setupController: function(controller){
-		controller.newRecord();
+// List of company owners
+App.OwnersRoute = Ember.Route.extend({
+	model: function(){
+		return this.modelFor('company').get('owners'); // Find owners of company
 	}
 });
 
-App.IndexRoute = Ember.Route.extend({
-  model: function() {
-    return ['red', 'yellow', 'blue'];
-  }
-});
 
-DS.RESTAdapter.reopen({
-  host: 'http://127.0.0.1:9393'
-});
 
-// Controllers
+/* ---------------
+   | Controllers |
+   --------------- */
+
 App.CompanyController = Ember.ObjectController.extend({
-	save: function(){
-		var post =  this.get('model');
-		post.save();
-		console.log(post.get('owners'));
-		post.get('owners').forEach(function(owner){
-			owner.save();
-		});
-//		this.get('target.router').transitionTo('companies.index');
-	},
-	destroyRecord: function(){
-		if( window.confirm("Delete company?") ){
-			this.get('content').deleteRecord();
-			this.get('model').save();
-			this.get('target.router').transitionTo('companies.index');
+	actions: {
+		save: function(){
+			$('#company_save_button').button('loading');
+			this.get('model').save().then(function(){
+				$('#company_save_button').button('reset');
+			});
+		},
+		deleteCompany: function(){
+			if(window.confirm("Delete?")){
+				this.get('content').deleteRecord();
+				this.get('model').get('owners').forEach(function(owner){
+					owner.deleteRecord();
+				});
+				this.get('model').save();
+				this.get('target.router').transitionTo('companies.index');
+			}
 		}
 	}
 });
 
-App.CompaniesNewController = Ember.ObjectController.extend({
-	save: function(){
-		this.get('model').save();
-		this.get('target.router').transitionTo('companies.index');
-	},
-	newRecord: function() {
-		this.set('content', this.store.createRecord("company"));
+App.CompaniesController = Ember.ArrayController.extend({
+	actions: {
+		addCompany: function(){
+			var company = this.get('store').createRecord('company');
+			this.get('target.router').transitionTo('company.index',company);
+		}
 	}
 });
 
-App.OwnersNewController = Ember.ObjectController.extend({
-	needs: "company",
-	newRecord: function(params) {
-		/*var company = this.controllerFor("company").get('model');
-		console.log("company.id:");
-		console.log(company.id);
-		console.log(company.get('name'));
-		var owner = this.store.createRecord('owner', {name: "FUCKNUDIG",company: company});
-		//company.get('owners').addObject(owner);
-		console.log(company.get('owners'));
-		this.store.find('company', company.id).then(function(){
-			owner.set('company',company);
-		});
-		owner.get('company').then(function(){}(
-		)
-		//console.log(owner.get('company'));*/
-		var owner = this.store.createRecord('owner');
-		var company = this.controllerFor("company").get('model');
-		company.set("owner", company);
-		console.log(company.get("owner"));
-		company.get("owners").then(function(owners){
-			console.log(owners);
-			owners.addObject(owner);
-		});
-		console.log(company.get("owners"));
+App.OwnerController = Ember.ObjectController.extend({
+	needs : ['company'], // So that we can access company information from the actions
+	companyBinding: 'controllers.company', // So that the company record is updated when we update its owners
+	actions: {
+		save: function(){
+			$('#owner_save_button').button('loading');
+			var company = this.get('controllers.company').get('model');
+			var owner = this.get('model');
+		//	this.get('store').commit();
+			company.save().then(function(){ // Save company so that it gets an id if it's new
+				owner.save().then(function(){ // Save the owners using that id
+					company.save()
+					$('#owner_save_button').button('reset');
+					console.log("prps");
+					console.log(this.get('id'));
+					//this.get('target.router').transitionTo('owner', this.get('content'));
+				});
+			},function(error){
+				alert("Could not save!");
+				console.log(error);
+
+				$('#owner_save_button').button('reset');
+			});
+		},
+		transitionAfterSave: function(){
+			alert("ID ændrede sig!");
+			if(this.get('content.id')){
+				this.get('target.router').transitionTo('owner', this.get('content'));
+			}
+		}.observes('content.id'),
+		deleteOwner: function(){
+			if(window.confirm("Delete Owner?")){
+				this.get('content').deleteRecord();
+				this.get('model').save();
+			}
+		}
 	}
 });
 
 App.OwnersController = Ember.ArrayController.extend({
-	companyBinding: 'controller.companyIndex.content',
-	needs: ['company']
+	companyBinding: 'controllers.company', // So that the company record is updated when we update its owners
+	needs : ['company'], // So that we can access company information from the actions
+	actions: {
+		addOwner: function(){
+			var company = this.get('controllers.company');
+			var owner = this.get('store').createRecord('owner', {companyId: company.get('model')});
+			company.get('owners').addObject(owner);
+/*			owner.save().then(function(result){
+				console.log(owner.get('company_id'));
+				røvpik();
+				alert("videresendt");
+			});*/
+			this.get('target.router').transitionTo('owner',owner);
+		}
+	}
 });
+
+
+/* |--------
+   | Views |
+   --------- */
+
+App.FileView = Ember.View.extend({
+	tagName: 'input',
+	attributeBindings: ['type', 'id'],
+	type: 'file',
+	change: function(ev){
+		view=this;
+		reader = new FileReader();
+		reader.onload = function(ev){
+			view.set('file',ev.target.result);
+		}
+		reader.readAsDataURL(ev.target.files[0]);
+	}
+})

@@ -48,7 +48,7 @@ class Owner < ActiveRecord::Base
 end
 
 get "/" do
-	send_file "public/index2.html"
+	send_file "public/index.html"
 end
 
 get "/api_doc" do
