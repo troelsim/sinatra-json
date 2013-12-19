@@ -9,6 +9,7 @@ configure :development do
 end
 
 configure :production do
+	puts "DATABASE_URL: #{ENV['DATABASE_URL']}"
 	db = URI.parse(ENV['DATABASE_URL'])
 	ActiveRecord::Base.establish_connection(
 		:adapter => 'postgresql',
