@@ -1,3 +1,3 @@
 json.owner do |json|
-	json.(@owner, :id, :name, :passport, :company_id)
+	json.partial! '_owner', owner: @owner
 end

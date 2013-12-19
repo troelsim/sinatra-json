@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Ember Starter Kit</title>
+<title>Companies</title>
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/bootstrap.css">
@@ -91,7 +91,11 @@
 		<h2>Owner details</h2>
 		<form {{action save on="submit"}}>
 			<p>{{ view Ember.TextField valueBinding="name" id="owner_name" placeholder="Name" required="true" }}</p>
-			<p>{{ view Ember.TextField valueBinding="passport" id="owner_passport" placeholder="Passport" required="true" }}</p>
+			{{#if passport}}
+			<p><a {{bindAttr href="passport"}} target="_blank">Passport (PDF)</a></p>
+			{{/if}}
+			<p>Upload a new passport (pdf):</p>
+				<p>{{ view App.FileView fileBinding="passport_file" }}</p>
 			<button class="btn btn-mini btn-success" type="submit" id="owner_save_button" data-loading-text="Saving...">Save</button>
 			<button class="btn btn-default" {{action 'deleteOwner' this}}>Delete</button>
 		</form>

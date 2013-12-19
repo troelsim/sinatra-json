@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/jbuilder'
 require 'protected_attributes'
+require 'base64'
 
 configure :development do
 	set :database, "sqlite3:///data.db"
@@ -21,6 +22,10 @@ configure :production do
 	)
 end
 
+configure do
+	set :server_dir, Dir.pwd
+	@server_dir =  Dir.pwd
+end
 
 class Company < ActiveRecord::Base
 	has_many :owners
@@ -30,10 +35,18 @@ end
 class Owner < ActiveRecord::Base
 	belongs_to :company
 	attr_protected :id
+	
+	def has_passport?
+		return File.file?("#{Dir.pwd}#{self.passport}")
+	end
+
+	def passport_path
+		return self.has_passport? ? "#{Dir.pwd}#{self.passport}" : nil
+	end
 end
 
 get "/" do
-	redirect "/index2.html"
+	send_file "public/index2.html"
 end
 
 get "/companies/?", :provides => :json do
@@ -72,7 +85,6 @@ delete "/companies/:id" do
 end
 
 put "/companies/:id" do
-	puts "lol"
 	jparams = JSON.parse(request.body.read.to_s)
 	begin
 		puts jparams[:company]
@@ -93,6 +105,7 @@ end
 
 get "/owners/:id" do
 	@owner = Owner.find(params[:id])
+	puts @owner.has_passport?
 	jbuilder :owner_show
 end
 
@@ -101,9 +114,9 @@ post "/owners" do
 	company_id = jparams['owner']['company_id']
 	puts company_id
 	@company = Company.find(company_id)
-	# Is there a file attached?
-	@owner=@company.owners.new(jparams['owner'])
-	#@company = Company.new(params.require(:company))
+	@owner=@company.owners.new(name: jparams['owner']['name'])
+	passport = save_passport(@owner,jparams)
+	@owner.update_attributes(passport: passport)
 	if @company.save
 		status 201
 		jbuilder :owner_show
@@ -115,9 +128,11 @@ end
 put "/owners/:id" do
 	jparams = JSON.parse(request.body.read.to_s)
 	begin
-		puts jparams[:owner]
+		# Is there a file?
+		
 		@owner = Owner.find(params[:id])
-		@owner.update_attributes(jparams["owner"].slice("name", "passport"))
+		passport = save_passport(@owner,jparams)
+		@owner.update_attributes(name: jparams["owner"]["name"], passport: passport)
 		jbuilder :owner_show
 	rescue ActiveRecord::RecordNotFound => e
 		puts e.message
@@ -126,8 +141,9 @@ put "/owners/:id" do
 	end
 end
 
-get "/fucknudig" do
-	"Hvad"
+get "/owners/:id/passport.pdf" do
+	@owner = Owner.find(params[:id])
+	send_file @owner.passport_path
 end
 
 put "/owners/:id/passport.pdf" do
@@ -160,5 +176,35 @@ helpers do
 
 	def get_base_url
 		"http://127.0.0.1:9393"
+	end
+
+	def get_passport_url(owner)
+		"#{get_base_url}/owners/#{owner.id}/passport.pdf"
+	end
+
+	def save_passport(owner, jparams) # Saves the file in jparams if there is one, returns 400 if it's invalid
+		if jparams["owner"]["passport_file"]
+			owner_id = params[:id]
+			folder = "/passports"
+			timestamp = Time.now.strftime("%Y-%m-%d-%H-%M-%S.%L")
+			filename = "#{folder}/owner-#{owner_id}-#{timestamp}.pdf"
+			print "Writing to #{filename}..."
+			begin
+				File.open("#{settings.server_dir}#{filename}", 'w') do |f|
+					# Strip the data type by finding where the "real data" starts
+					start = jparams["owner"]["passport_file"].index("base64,")+7
+					f.write(Base64.urlsafe_decode64(jparams["owner"]["passport_file"][start .. -1]))
+				end
+			rescue ArgumentError # If the data is not valid Base64
+				puts "error."
+				halt 400
+			end
+			puts "done."
+			# Save *relative* file path in database
+			return filename
+			puts jparams["owner"]["passport"]
+		else
+			return nil
+		end
 	end
 end

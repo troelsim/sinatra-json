@@ -29,7 +29,8 @@ App.Company = DS.Model.extend({
 App.Owner = DS.Model.extend({
 	name: DS.attr('string'),
 	passport: DS.attr('string'),
-	company_id: DS.belongsTo('company')
+	company_id: DS.belongsTo('company'),
+	passport_file: DS.attr('string')
 });
 
 
@@ -131,8 +132,6 @@ App.OwnerController = Ember.ObjectController.extend({
 			if(window.confirm("Delete Owner?")){
 				this.get('content').deleteRecord();
 				this.get('model').save();
-				this.get('target.router').transitionTo('company.owners');//,this.get('controllers.company'));
-				alert("hva");
 			}
 		}
 	}
@@ -156,3 +155,21 @@ App.OwnersController = Ember.ArrayController.extend({
 	}
 });
 
+
+/* |--------
+   | Views |
+   --------- */
+
+App.FileView = Ember.View.extend({
+	tagName: 'input',
+	attributeBindings: ['type', 'id'],
+	type: 'file',
+	change: function(ev){
+		view=this;
+		reader = new FileReader();
+		reader.onload = function(ev){
+			view.set('file',ev.target.result);
+		}
+		reader.readAsDataURL(ev.target.files[0]);
+	}
+})
