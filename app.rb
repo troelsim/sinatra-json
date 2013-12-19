@@ -175,10 +175,12 @@ helpers do
 	end
 
 	def get_base_url
+		
 		"http://127.0.0.1:9393"
 	end
 
 	def get_passport_url(owner)
+		"#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
 		"#{get_base_url}/owners/#{owner.id}/passport.pdf"
 	end
 
@@ -200,9 +202,8 @@ helpers do
 				halt 400
 			end
 			puts "done."
-			# Save *relative* file path in database
+			# Return *relative* file path
 			return filename
-			puts jparams["owner"]["passport"]
 		else
 			return nil
 		end
