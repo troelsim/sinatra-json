@@ -185,12 +185,10 @@ helpers do
 	end
 
 	def get_base_url
-		
-		"http://127.0.0.1:9393"
+		"#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
 	end
 
 	def get_passport_url(owner)
-		"#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
 		"#{get_base_url}/owners/#{owner.id}/passport.pdf"
 	end
 

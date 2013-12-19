@@ -56,9 +56,11 @@
 			<h2>Company details:</h2>
 			<form {{action save on="submit"}}>
 				<p>{{ view Ember.TextField valueBinding="name" id="company_name" placeholder="Name" required="true"}}</p>
-				<p>{{ view Ember.TextField valueBinding="email" id="company_email" placeholder="e-mail" required="true"}}</p>
+				<p>{{ view Ember.TextField valueBinding="address" id="company_address" placeholder="Address" required="true"}}</p>
 				<p>{{ view Ember.TextField valueBinding="city" id="company_city" placeholder="City" required="true"}}</p>
 				<p>{{ view Ember.TextField valueBinding="country" id="company_country" placeholder="Country" required="true"}}</p>
+				<p>{{ view Ember.TextField valueBinding="email" id="company_email" placeholder="e-mail" required="true"}}</p>
+				<p>{{ view Ember.TextField valueBinding="phone" id="company_phone" placeholder="Phone no." required="true"}}</p>
 				<p>{{#linkTo 'owners' this}}Owners <span class="glyphicon glyphicon-chevron-right"></span><br/>{{/linkTo}}</p>
 				<button class="btn btn-mini btn-success" type="submit" id="company_save_button" data-loading-text="Saving...">Save</button>
 				<button class="btn btn-default" {{action 'deleteCompany' this}}>Delete</button>

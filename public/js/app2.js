@@ -23,6 +23,8 @@ App.Company = DS.Model.extend({
 	email: DS.attr('string'),
 	city: DS.attr('string'),
 	country: DS.attr('string'),
+	address: DS.attr('string'),
+	phone: DS.attr('string'),
 	owners: DS.hasMany('owner',{async:true})
 });
 

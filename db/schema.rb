@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131212224534) do
+ActiveRecord::Schema.define(version: 20131219232642) do
 
   create_table "companies", force: true do |t|
     t.string "name"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20131212224534) do
     t.string "country"
     t.string "email"
     t.string "phone"
+    t.string "address"
   end
 
   create_table "owners", force: true do |t|
