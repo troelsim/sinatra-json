@@ -4,7 +4,21 @@ require 'sinatra/activerecord'
 require 'sinatra/jbuilder'
 require 'protected_attributes'
 
-set :database, "sqlite3:///data.db"
+configure :development do
+	set :database, "sqlite3:///data.db"
+end
+
+configure :production do
+	db = URI.parse(ENV['DATABASE_URL'])
+	ActiveRecord::Base.establish_connection(
+		:adapter => 'postgresql',
+		:host => db.host,
+		:username => db.user,
+		:passowrd => db.password,
+		:database => db.path[1..-1],
+		:encoding => 'utf8'
+	)
+end
 
 
 class Company < ActiveRecord::Base
