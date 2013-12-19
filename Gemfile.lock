@@ -34,6 +34,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    redcarpet (3.0.0)
     ripl (0.7.0)
       bond (~> 0.4.2)
     ripl-multi_line (0.3.1)
@@ -72,6 +73,7 @@ DEPENDENCIES
   activerecord
   pg
   protected_attributes
+  redcarpet
   shotgun
   sinatra
   sinatra-activerecord

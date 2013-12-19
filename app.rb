@@ -4,6 +4,7 @@ require 'sinatra/activerecord'
 require 'sinatra/jbuilder'
 require 'protected_attributes'
 require 'base64'
+require 'rubygems'
 
 configure :development do
 	set :database, "sqlite3:///data.db"
@@ -23,6 +24,7 @@ configure :production do
 end
 
 configure do
+	set :markdown, :layout_engine => :erb
 	set :server_dir, Dir.pwd
 	@server_dir =  Dir.pwd
 end
@@ -47,6 +49,14 @@ end
 
 get "/" do
 	send_file "public/index2.html"
+end
+
+get "/api_doc" do
+	markdown :api_doc
+end
+
+get "/readme" do
+	markdown :readme
 end
 
 get "/companies/?", :provides => :json do

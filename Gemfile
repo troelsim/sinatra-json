@@ -4,7 +4,7 @@ gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'tilt-jbuilder', :require => 'sinatra/jbuilder'
 gem 'protected_attributes'
-
+gem 'redcarpet'
 
 group :development do
 	gem 'sqlite3'
