@@ -1,0 +1,53 @@
+/* Put your CSS here */
+.ember-application {
+    margin: 20px;
+}
+
+body{
+	padding-top: 70px;
+}
+.nolist{
+	padding-left: 0px;
+}
+.companylisting{
+	list-style: none;
+	display:block;
+	margin-left: 0px;
+}
+.sidebar{
+	float:left;
+}
+.company_content{
+	float: left;
+	width: 300px;
+}
+.owner_content{
+	float: left;
+	width: 200px;
+}
+.tab{
+	/*float: left; */
+	border-left: 3px solid #ccc;
+	display: inline-block;
+	padding: 10px;
+	padding-bottom: 30px;
+	height: 100%;
+	max-width: 300px;
+	min-width: 200px;
+}
+.newtab{
+	float: left;
+}
+
+.tab h2{
+	font-size: 1.3em;
+	margin-top: 0px;
+}
+
+.tab p{
+	margin-bottom: 4px;
+}
+
+button{
+	min-width: 80px;
+}
