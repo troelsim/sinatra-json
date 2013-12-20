@@ -21,7 +21,7 @@ configure :production do
 		:database => db.path[1..-1],
 		:encoding => 'utf8'
 	)
-	ActiveRecord::Base.logger.level=1
+#	ActiveRecord::Base.logger.level=1
 end
 
 configure do
