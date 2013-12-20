@@ -1,7 +1,7 @@
 Companies REST/JSON API
 =======================
 
-This is a simple web service for demonstrational purposes. It is an interface to a database of company information, and consists of two parts, the REST API and the client. Usage of the API is discussed in `api_doc`. Here, we will discuss the implementation.
+This is a simple web service for demonstrational purposes. It is an interface to a database of company information, and consists of two parts, the REST API and the client. Usage of the API is discussed in [api_doc](/api_doc). Here, we will discuss implementation considerations.
 
 The server
 ----------
