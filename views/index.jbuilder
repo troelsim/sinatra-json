@@ -1,3 +1,3 @@
-json.companies @companies do |json, company|
+json.companies @companies do |company|
 	json.partial! '_company', company: company
 end

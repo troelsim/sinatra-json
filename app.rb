@@ -100,7 +100,11 @@ put "/companies/:id" do
 end
 
 get "/owners?" do
-	@owners = Owner.all
+	if params[:ids]
+		@owners = Owner.find(params[:ids])
+	else
+		@owners = Owner.all
+	end
 	jbuilder :owners_show
 end
 

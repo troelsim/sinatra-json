@@ -128,7 +128,7 @@ Owners are read and written in the same manner as companies:
 
  -  `GET /owners` returns a list of all owners. A list of specific `id`'s     can be supplied as an array in the query string:  
     `GET /owners?ids[]=1&ids[]=3&ids[]=5`.  
-    This is useful if the client wants all owners belonging to a specific     company.
+    This is useful if the client wants all owners belonging to a specific     company, and ember data uses this approach.
  -  `GET /owners/<id>` returns the owner with id `<id>`.
  -  `GET /owners/<id>/passport.pdf` returns the owner's passport as a PDF     file if it exists, otherwise 404.
  -  `POST /owners` creates a new owner using the given JSON data.
