@@ -64,6 +64,10 @@ App.OwnersRoute = Ember.Route.extend({
 	}
 });
 
+// Owner Details
+App.OwnerRoute = Ember.Route.extend({
+});
+
 
 
 /* ---------------
@@ -119,7 +123,7 @@ App.OwnerController = Ember.ObjectController.extend({
 				});
 			},function(error){
 				alert("Could not save!");
-				console.log(error);
+				console.log(error.message);
 
 				$('#owner_save_button').button('reset');
 			});
