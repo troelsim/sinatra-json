@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131219232642) do
+ActiveRecord::Schema.define(version: 20131220103310) do
 
   create_table "companies", force: true do |t|
     t.string "name"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20131219232642) do
 
   create_table "owners", force: true do |t|
     t.string  "name"
-    t.string  "passport"
+    t.text    "passport",   limit: 255
     t.integer "company_id"
   end
 
