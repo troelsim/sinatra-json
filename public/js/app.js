@@ -1,8 +1,5 @@
 App = Ember.Application.create({LOG_TRANSITIONS: true, LOG_TRANSITIONS_INTERNAL: true});
 
-DS.RESTAdapter.reopen({
-//	host: 'http://127.0.0.1:9393'
-});
 
 // Router
 
@@ -112,28 +109,15 @@ App.OwnerController = Ember.ObjectController.extend({
 			$('#owner_save_button').button('loading');
 			var company = this.get('controllers.company').get('model');
 			var owner = this.get('model');
-		//	this.get('store').commit();
 			company.save().then(function(){ // Save company so that it gets an id if it's new
 				owner.save().then(function(){ // Save the owners using that id
 					company.save()
 					$('#owner_save_button').button('reset');
 					console.log("prps");
 					console.log(this.get('id'));
-					//this.get('target.router').transitionTo('owner', this.get('content'));
 				});
-			},function(error){
-				alert("Could not save!");
-				console.log(error.message);
-
-				$('#owner_save_button').button('reset');
 			});
 		},
-		transitionAfterSave: function(){
-			alert("ID ændrede sig!");
-			if(this.get('content.id')){
-				this.get('target.router').transitionTo('owner', this.get('content'));
-			}
-		}.observes('content.id'),
 		deleteOwner: function(){
 			if(window.confirm("Delete Owner?")){
 				this.get('content').deleteRecord();
@@ -151,11 +135,6 @@ App.OwnersController = Ember.ArrayController.extend({
 			var company = this.get('controllers.company');
 			var owner = this.get('store').createRecord('owner', {companyId: company.get('model')});
 			company.get('owners').addObject(owner);
-/*			owner.save().then(function(result){
-				console.log(owner.get('company_id'));
-				røvpik();
-				alert("videresendt");
-			});*/
 			this.get('target.router').transitionTo('owner',owner);
 		}
 	}

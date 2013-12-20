@@ -21,7 +21,6 @@ configure :production do
 		:database => db.path[1..-1],
 		:encoding => 'utf8'
 	)
-#	ActiveRecord::Base.logger.level=1
 end
 
 configure do
@@ -153,13 +152,16 @@ helpers do
 	end
 
 	def get_passport(jparams) # Saves the file in jparams if there is one, returns 400 if it's invalid
-		start = jparams["owner"]["passport_file"].index("base64,")+7
-		intro = jparams["owner"]["passport_file"][0 .. start]
-		if intro.match("application/pdf") or intro.match("application/x-pdf")
-			return jparams["owner"]["passport_file"][start .. -1]
+		if jparams["owner"]["passport_file"]
+			start = jparams["owner"]["passport_file"].index("base64,")+7
+			intro = jparams["owner"]["passport_file"][0 .. start]
+			if intro.match("application/pdf") or intro.match("application/x-pdf")
+				return jparams["owner"]["passport_file"][start .. -1]
+			else
+				raise ArgumentError, "Passport Not PDF"
+			end
 		else
-			raise ArgumentError, "Passport Not PDF"
+			return nil
 		end
 	end
-	
 end

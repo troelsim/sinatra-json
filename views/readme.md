@@ -1,1 +1,1 @@
-../public/readme.md
+../README.md

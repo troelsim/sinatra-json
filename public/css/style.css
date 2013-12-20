@@ -9,24 +9,12 @@ body{
 .nolist{
 	padding-left: 0px;
 }
-.companylisting{
+.listing{
 	list-style: none;
 	display:block;
 	margin-left: 0px;
 }
-.sidebar{
-	float:left;
-}
-.company_content{
-	float: left;
-	width: 300px;
-}
-.owner_content{
-	float: left;
-	width: 200px;
-}
 .tab{
-	/*float: left; */
 	border-left: 3px solid #ccc;
 	display: inline-block;
 	padding: 10px;
@@ -34,8 +22,6 @@ body{
 	height: 100%;
 	max-width: 300px;
 	min-width: 200px;
-}
-.newtab{
 	float: left;
 }
 

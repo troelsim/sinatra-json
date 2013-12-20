@@ -33,11 +33,11 @@
 
 	<!-- LIST OF COMPANIES -->
 	<script type="text/x-handlebars" data-template-name="companies">
-		<div class="tab newtab">
+		<div class="tab">
 			<h2>Companies</h2>
 			<ul class="nolist">
 			{{#each}}
-				<li class="companylisting">
+				<li class="listing">
 					{{#linkTo 'company' this}}
 						<span class="glyphicon glyphicon-edit"></span>
 						{{name}}
@@ -52,7 +52,7 @@
 
 	<!-- COMPANY DETAILS -->
 	<script type="text/x-handlebars" data-template-name="company">
-		<div class="tab newtab">
+		<div class="tab">
 			<h2>Company details:</h2>
 			<form {{action save on="submit"}}>
 				<p>{{ view Ember.TextField valueBinding="name" id="company_name" placeholder="Name" required="true"}}</p>
@@ -72,11 +72,11 @@
 
 	<!-- LIST OF OWNERS -->
 	<script type="text/x-handlebars" data-template-name="owners">
-		<div class="tab newtab">
+		<div class="tab">
 		<h2>Owners:</h2>
 		<ul class="nolist">
 		{{#each}}
-			<li class="companylisting">
+			<li class="listing">
 				{{#linkTo 'owner' this}}
 						<span class="glyphicon glyphicon-edit"></span>
 						{{name}}
@@ -91,7 +91,7 @@
 
 	<!-- OWNER DETAILS -->
 	<script type="text/x-handlebars" data-template-name="owner">
-		<div class="tab newtab">
+		<div class="tab">
 		<h2>Owner details</h2>
 		<form {{action save on="submit"}}>
 			<p>{{ view Ember.TextField valueBinding="name" id="owner_name" placeholder="Name" required="true" }}</p>
