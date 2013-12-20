@@ -65,7 +65,11 @@ get "/readme" do
 end
 
 get "/companies/?" do
-	@companies = Company.all
+	if params[:ids]
+		@companies = Company.find(params[:ids])
+	else
+		@companies = Company.all
+	end
 	jbuilder :index
 end
 
