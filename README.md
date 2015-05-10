@@ -12,10 +12,10 @@ Data is validated on the model level using ActiveRecords' `attr_protected`, `val
 
 When uploading files, we expect the client to simply deliver the file, Base64-encoded, in the JSON data. The server then checks the MIME type, stores the content directly in the database and decodes and sends it back when requested. This method has several drawbacks:
 
- - 33% traffic overhead. Unacceptable for potentially very large files.
- - The whole file is kept in memory.
- - Large processing time, potentially causing timeouts in single-threaded systems.
- - Unnecessarily high traffic to the database, which is very unscalable.
+ - 33% traffic overhead. Unacceptable for potentially very large files
+ - The whole file is kept in memory
+ - Large processing time, potentially causing timeouts in single-threaded systems
+ - Unnecessarily high traffic to the database, which is very unscalable
 
 I have chosen this method anyway because:
 
